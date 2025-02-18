@@ -1,0 +1,51 @@
+[
+  {
+    "id": 1,
+    "houseName": "Luxury Villa",
+    "bookedBy": "John Doe",
+    "email": "johndoe@example.com",
+    "date": "2025-02-01"
+  },
+  {
+    "id": 2,
+    "houseName": "Cozy Apartment",
+    "bookedBy": "Jane Smith",
+    "email": "janesmith@example.com",
+    "date": "2025-03-15"
+  },
+  {
+    "id": 3,
+    "name": "Anurag ",
+    "email": "tiwarianurag812@gmail.com",
+    "date": "2025-01-10",
+    "house": "Luxury Villa"
+  },
+  {
+    "id": 4,
+    "name": "Anurag ",
+    "email": "tiwarianurag812@gmail.com",
+    "date": "2025-01-17",
+    "house": "Luxury Villa"
+  },
+  {
+    "id": 5,
+    "name": "Anurag Tiwari",
+    "email": "tiwarianurag812@gmail.com",
+    "date": "2024-12-31",
+    "house": "Luxury Villa"
+  },
+  {
+    "id": 6,
+    "name": "Anurag ",
+    "email": "tiwarianurag812@gmail.com",
+    "date": "2025-01-24",
+    "house": "Luxury Villa"
+  },
+  {
+    "id": 7,
+    "name": "Anurag Tiwari ",
+    "email": "tiwarianurag812@gmail.com",
+    "date": "2025-01-10",
+    "house": "Luxury Villa"
+  }
+]

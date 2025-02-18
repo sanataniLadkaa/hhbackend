@@ -1,0 +1,30 @@
+[
+  {
+    "id": 3,
+    "name": "Emily Johnson",
+    "apartment": "C-404",
+    "status": "Active",
+    "contact": "+1122334455"
+  },
+  {
+    "id": 4,
+    "name": "Anurag ",
+    "apartment": "C-342",
+    "status": "Active",
+    "contact": "+02349813890"
+  },
+  {
+    "id": 5,
+    "name": "Ajay",
+    "apartment": "C-342",
+    "status": "Active",
+    "contact": "+029348234"
+  },
+  {
+    "id": 6,
+    "name": "Amrita",
+    "apartment": "C-432",
+    "status": "Active",
+    "contact": "+0938329880"
+  }
+]
