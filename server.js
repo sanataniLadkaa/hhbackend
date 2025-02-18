@@ -4,7 +4,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const app = express();
-const PORT = 5000;
+const PORT = 5000; // You can keep it for local development
 
 // Middleware
 app.use(cors({
@@ -15,15 +15,15 @@ app.use(cors({
 app.use(bodyParser.json());
 
 // Connect to MongoDB
-const connectDB = async() => {
+const connectDB = async () => {
   try {
     await mongoose.connect('mongodb+srv://Anurag:anurag@cluster0.ack3l.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0');
     console.log("mongodb connected");
   } catch (error) {
-    console.log("connection error ",error)
+    console.log("connection error ", error);
   }
-}
-connectDB()
+};
+connectDB();
 
 // Mongoose Schemas
 const tenantSchema = new mongoose.Schema({
