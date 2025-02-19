@@ -1,26 +1,36 @@
+// require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const app = express();
-const PORT = 5000; // You can keep it for local development
 
 // Middleware
+const allowedOrigins = [
+  'https://67b5d9cee0388000082c83c6--housecapital.netlify.app',
+  'http://localhost:3000'
+];
 app.use(cors({
-  origin: 'https://67b5d9cee0388000082c83c6--housecapital.netlify.app', // Allow requests only from your frontend
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed HTTP methods
-  allowedHeaders: ['Content-Type', 'Authorization'], // Specify allowed headers
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(bodyParser.json());
 
 // Connect to MongoDB
 const connectDB = async () => {
   try {
-    await mongoose.connect('mongodb+srv://Anurag:anurag@cluster0.ack3l.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0');
-    console.log("mongodb connected");
+    await mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+    console.log("MongoDB connected");
   } catch (error) {
-    console.log("connection error ", error);
+    console.error("Connection error:", error.message);
   }
 };
 connectDB();
@@ -30,38 +40,47 @@ const tenantSchema = new mongoose.Schema({
   name: String,
   apartment: String,
   contact: String,
-  status: { type: String, default: 'Active' },
+  status: { type: String, default: 'Active' }
 });
 
 const bookingSchema = new mongoose.Schema({
   name: String,
   email: String,
   date: Date,
-  house: String,
+  house: String
+});
+
+const contactSchema = new mongoose.Schema({
+  name: String,
+  email: String,
+  phone: String,
+  message: String
 });
 
 // Mongoose Models
 const Tenant = mongoose.model('Tenant', tenantSchema);
 const Booking = mongoose.model('Booking', bookingSchema);
+const Contact = mongoose.model('Contact', contactSchema);
 
-// Tenant management routes
+// Routes
 app.get('/tenants', async (req, res) => {
   try {
     const tenants = await Tenant.find();
     res.json(tenants);
   } catch (err) {
+    console.error("Failed to fetch tenants:", err.message);
     res.status(500).json({ error: 'Failed to fetch tenants' });
   }
 });
 
-// Modify POST Route for Tenants
-app.post('/tenants', async (req, res) => {  // Fix: removed extra URL in the post route
+app.post('/tenants', async (req, res) => {
   const { name, apartment, status, contact } = req.body;
   const newTenant = new Tenant({ name, apartment, status, contact });
   try {
     await newTenant.save();
     res.status(201).json(newTenant);
   } catch (err) {
+    console.error("Failed to create tenant:", err.message);
     res.status(500).json({ error: 'Failed to create tenant' });
   }
 });
@@ -78,6 +97,7 @@ app.put('/tenants/:id/status', async (req, res) => {
       res.status(404).json({ message: 'Tenant not found' });
     }
   } catch (err) {
+    console.error("Failed to update status:", err.message);
     res.status(500).json({ error: 'Failed to update status' });
   }
 });
@@ -97,6 +117,7 @@ app.put('/tenants/:id', async (req, res) => {
       res.status(404).json({ message: 'Tenant not found' });
     }
   } catch (err) {
+    console.error("Failed to update tenant:", err.message);
     res.status(500).json({ error: 'Failed to update tenant' });
   }
 });
@@ -111,11 +132,11 @@ app.delete('/tenants/:id', async (req, res) => {
       res.status(404).json({ message: 'Tenant not found' });
     }
   } catch (err) {
+    console.error("Failed to delete tenant:", err.message);
     res.status(500).json({ error: 'Failed to delete tenant' });
   }
 });
 
-// Booking management routes
 app.post('/book-house', async (req, res) => {
   const { name, email, date, house } = req.body;
   if (!name || !email || !date || !house) {
@@ -127,6 +148,7 @@ app.post('/book-house', async (req, res) => {
     await newBooking.save();
     res.status(201).json({ message: 'Booking confirmed!', booking: newBooking });
   } catch (err) {
+    console.error("Failed to create booking:", err.message);
     res.status(500).json({ error: 'Failed to create booking' });
   }
 });
@@ -136,30 +158,35 @@ app.get('/bookings', async (req, res) => {
     const bookings = await Booking.find();
     res.status(200).json(bookings);
   } catch (err) {
+    console.error("Failed to fetch bookings:", err.message);
     res.status(500).json({ error: 'Failed to fetch bookings' });
   }
 });
 
-// Contact form submission route
-app.post('/contact', (req, res) => {
+app.post('/contact', async (req, res) => {
   const { name, email, phone, message } = req.body;
-  console.log('Form Data Received:', { name, email, phone, message });
-  res.status(200).json({ message: 'Form submitted successfully!' });
+  try {
+    const newContact = new Contact({ name, email, phone, message });
+    await newContact.save();
+    res.status(201).json({ message: 'Form submitted successfully!' });
+  } catch (err) {
+    console.error("Failed to save contact:", err.message);
+    res.status(500).json({ error: 'Failed to save contact' });
+  }
+});
+
+app.get('/contacts', async (req, res) => {
+  try {
+    const contacts = await Contact.find();
+    res.json(contacts);
+  } catch (err) {
+    console.error("Failed to fetch contacts:", err.message);
+    res.status(500).json({ error: 'Failed to fetch contacts' });
+  }
 });
 
 app.get('/', (req, res) => {
   res.send('Backend is running!');
 });
 
-app.get('/contacts', async (req, res) => {
-  try {
-    const contacts = await Contact.find(); // Assuming you have a Contact model
-    res.json(contacts);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch contacts' });
-  }
-});
-
-
-// Export the app as a Vercel function
 module.exports = app;
