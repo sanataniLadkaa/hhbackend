@@ -45,7 +45,7 @@ const Tenant = mongoose.model('Tenant', tenantSchema);
 const Booking = mongoose.model('Booking', bookingSchema);
 
 // Tenant management routes
-app.get('https://hhbackend-ivory.vercel.app/tenants', async (req, res) => {
+app.get('/tenants', async (req, res) => {
   try {
     const tenants = await Tenant.find();
     res.json(tenants);
@@ -82,7 +82,7 @@ app.put('/tenants/:id/status', async (req, res) => {
   }
 });
 
-app.put('https://hhbackend-ivory.vercel.app/tenants/:id', async (req, res) => {
+app.put('/tenants/:id', async (req, res) => {
   const { id } = req.params;
   const { name, apartment, contact } = req.body;
   try {
@@ -101,7 +101,7 @@ app.put('https://hhbackend-ivory.vercel.app/tenants/:id', async (req, res) => {
   }
 });
 
-app.delete('https://hhbackend-ivory.vercel.app/tenants/:id', async (req, res) => {
+app.delete('/tenants/:id', async (req, res) => {
   const { id } = req.params;
   try {
     const deletedTenant = await Tenant.findByIdAndDelete(id);
@@ -116,7 +116,7 @@ app.delete('https://hhbackend-ivory.vercel.app/tenants/:id', async (req, res) =>
 });
 
 // Booking management routes
-app.post('https://hhbackend-ivory.vercel.app/book-house', async (req, res) => {
+app.post('/book-house', async (req, res) => {
   const { name, email, date, house } = req.body;
   if (!name || !email || !date || !house) {
     return res.status(400).json({ error: 'All fields are required' });
@@ -131,7 +131,7 @@ app.post('https://hhbackend-ivory.vercel.app/book-house', async (req, res) => {
   }
 });
 
-app.get('https://hhbackend-ivory.vercel.app/bookings', async (req, res) => {
+app.get('/bookings', async (req, res) => {
   try {
     const bookings = await Booking.find();
     res.status(200).json(bookings);
@@ -141,13 +141,13 @@ app.get('https://hhbackend-ivory.vercel.app/bookings', async (req, res) => {
 });
 
 // Contact form submission route
-app.post('https://hhbackend-ivory.vercel.app/contact', (req, res) => {
+app.post('/contact', (req, res) => {
   const { name, email, phone, message } = req.body;
   console.log('Form Data Received:', { name, email, phone, message });
   res.status(200).json({ message: 'Form submitted successfully!' });
 });
 
-app.get('https://hhbackend-ivory.vercel.app/', (req, res) => {
+app.get('/', (req, res) => {
   res.send('Backend is running!');
 });
 
