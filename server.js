@@ -175,7 +175,7 @@ app.post('/contact', async (req, res) => {
   }
 });
 
-app.get('/contacts', async (req, res) => {
+app.get('/contact', async (req, res) => {
   try {
     const contacts = await Contact.find();
     res.json(contacts);
