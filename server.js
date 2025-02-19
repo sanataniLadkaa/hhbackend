@@ -151,5 +151,15 @@ app.get('/', (req, res) => {
   res.send('Backend is running!');
 });
 
+app.get('/contacts', async (req, res) => {
+  try {
+    const contacts = await Contact.find(); // Assuming you have a Contact model
+    res.json(contacts);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch contacts' });
+  }
+});
+
+
 // Export the app as a Vercel function
 module.exports = app;
