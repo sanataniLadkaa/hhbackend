@@ -8,7 +8,7 @@ const PORT = 5000; // You can keep it for local development
 
 // Middleware
 app.use(cors({
-  origin: 'https://hc-frontend-five.vercel.app/', // Allow requests only from your frontend
+  origin: 'https://hc-frontend-ten.vercel.app', // Allow requests only from your frontend
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed HTTP methods
   allowedHeaders: ['Content-Type', 'Authorization'], // Specify allowed headers
 }));
