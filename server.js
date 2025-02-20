@@ -197,13 +197,5 @@ app.get('/', (req, res) => {
   res.send('Backend is running!');
 });
 
-// Global Error Handling
-process.on('unhandledRejection', (err) => {
-  console.error("Unhandled Rejection:", err);
-});
-
-// Start Server with Timeout
-const server = app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-server.timeout = 60000; // 60 seconds timeout
 
 module.exports = app;
