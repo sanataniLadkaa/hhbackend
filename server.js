@@ -8,6 +8,7 @@ const app = express();
 // Middleware
 const allowedOrigins = [
   'https://67b5d9cee0388000082c83c6--housecapital.netlify.app',
+  'https://housecapital.netlify.app',
   'http://localhost:3000'
 ];
 app.use(cors({
