@@ -24,15 +24,21 @@ app.use(cors({
 app.use(bodyParser.json());
 
 // Connect to MongoDB
-const connectDB = async() => {
+const connectDB = async () => {
   try {
-    await mongoose.connect('mongodb+srv://Anurag:anurag@cluster0.ack3l.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0');
-    console.log("mongodb connected");
+    await mongoose.connect('mongodb+srv://Anurag:anurag@cluster0.ack3l.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000, // 5 seconds timeout
+      socketTimeoutMS: 45000, // 45 seconds socket timeout
+    });
+    console.log("MongoDB connected");
   } catch (error) {
-    console.log("connection error ",error)
+    console.error("MongoDB connection error:", error);
+    process.exit(1); // Stop the app if the DB connection fails
   }
-}
-connectDB()
+};
+connectDB();
 // Mongoose Schemas
 const tenantSchema = new mongoose.Schema({
   name: String,
@@ -63,7 +69,11 @@ const Contact = mongoose.model('Contact', contactSchema);
 // Routes
 app.get('/tenants', async (req, res) => {
   try {
-    const tenants = await Tenant.find();
+    const { page = 1, limit = 10 } = req.query;
+    const tenants = await Tenant.find()
+      .limit(parseInt(limit))
+      .skip((parseInt(page) - 1) * parseInt(limit));
+    
     res.json(tenants);
   } catch (err) {
     console.error("Failed to fetch tenants:", err.message);
@@ -186,5 +196,14 @@ app.get('/contact', async (req, res) => {
 app.get('/', (req, res) => {
   res.send('Backend is running!');
 });
+
+// Global Error Handling
+process.on('unhandledRejection', (err) => {
+  console.error("Unhandled Rejection:", err);
+});
+
+// Start Server with Timeout
+const server = app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.timeout = 60000; // 60 seconds timeout
 
 module.exports = app;
